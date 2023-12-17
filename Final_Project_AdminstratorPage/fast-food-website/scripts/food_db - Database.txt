@@ -1,1 +1,0 @@
-CREATE SCHEMA `food_db` ;
