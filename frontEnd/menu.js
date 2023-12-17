@@ -12,7 +12,7 @@ $(document).ready(function () {
        
 
         $.ajax({
-            url: 'http://localhost/php/Final_Project_AdminstratorPage/BackEnd/menu.php',
+            url: 'http://localhost/php/fast_food_website/BackEnd/menu.php',
             method: 'POST',
             data: JSON.stringify({ prodName, quantity, price, prodDescr, file }),
             contentType: 'application/json',
@@ -33,7 +33,7 @@ $(document).ready(function () {
 const deleteHandler = (id) =>{
     debugger;
     $.ajax({
-        url: 'http://localhost/php/Final_Project_AdminstratorPage/BackEnd/menu.php',
+        url: 'http://localhost/php/fast_food_website/BackEnd/menu.php',
         method: 'DELETE',
         data: JSON.stringify({ id }),
         contentType: 'application/json',
@@ -60,7 +60,7 @@ const EditHandler = (id, prodName, quantity, price, prodDescr) =>{
     
     debugger;
     $.ajax({
-        url: 'http://localhost/php/Final_Project_AdminstratorPage/BackEnd/menu.php',
+        url: 'http://localhost/php/fast_food_website/BackEnd/menu.php',
         method: 'PUT',
         data: JSON.stringify({ id, prodName, quantity, price, prodDescr }),
         contentType: 'application/json',
@@ -133,7 +133,7 @@ function loadMenu() {
     debugger;
     $.ajax({
         method: 'GET',
-        url: 'http://localhost/php/Final_Project_AdminstratorPage/BackEnd/menu.php',
+        url: 'http://localhost/php/fast_food_website/BackEnd/menu.php',
         // url: '/BackEnd/administrator.php',
         success: function (response) {
             debugger;
