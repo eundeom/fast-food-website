@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    tr input{
+        width: 40px;
+    }
+</style>
 <body>
     <table border="1">
         <thead>
@@ -92,7 +97,7 @@
                 error(xhr.statusText);
             }
         }
-        xhr.open("GET","http://localhost/php/Final_Project/orderhistory.php");
+        xhr.open("GET","http://localhost/php/Final_Project/BackEnd/orderhistory.php");
         xhr.send();
     }).then(load,error)
 </script>
