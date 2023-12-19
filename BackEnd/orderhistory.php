@@ -26,13 +26,18 @@ switch ($_SERVER['REQUEST_METHOD']) {
          $conn->close();
         break;
     case 'POST':
-        
-        break;
-    case 'PUT':
-        
-        break;
-    case 'DELETE':
-        
+        $json = file_get_contents("php://input"); 
+        $data = json_decode($json);
+        $replaceQuery = $conn->prepare("REPLACE INTO order_tb VALUES(?, ?, ?, ?, ?)");
+        $replaceQuery->bind_param('isisi', $data->orderid, $data->product, $data->userid, $data->date, $data->rating);
+        $replaceQuery->execute();
+        if ($replaceQuery->affected_rows > 0) {
+            echo json_encode(['success' => 'Record updated successfully.']);
+        } else {
+            echo json_encode(['error' => 'Failed to update record.']);
+        }
+        $replaceQuery->close();
+        $conn->close();
         break;
     default:
         die(json_encode(['error' => 'Invalid request method.']));

@@ -27,10 +27,22 @@
     </table>
 </body>
 <script type="module">
-    const ratingSubmit = (obj)=>{
-        console.log(obj);
+    const postLoad = (data)=>{
+        console.log(data)
     }
-    const ratingDelete = (obj)=>{
+    const ratingUpdate = (obj)=>{
+        let loadPromise = new Promise((load,error)=>{
+            const xhr = new XMLHttpRequest();
+            xhr.onload = ()=>{
+                if(xhr.status == 200){
+                    load(xhr.response);
+                }else{
+                    error(xhr.statusText);
+                }
+            }
+            xhr.open("POST","http://localhost/php/Final_Project/BackEnd/orderhistory.php");
+            xhr.send(JSON.stringify(obj));
+        }).then(postLoad,error)
         console.log(obj);
     }
     const ratingBtn = (e,obj)=>{
@@ -47,7 +59,7 @@
                 let rating = Number(row.children[4].children[0].value);
                 if(rating >= 0 && rating < 6 && rating != ''){
                     obj.rating = rating;
-                    ratingSubmit(obj);
+                    ratingUpdate(obj);
                     row.children[4].children[0].remove();
                     row.children[4].innerText = rating;
                     row.children[5].innerText="Delete rating";
@@ -58,7 +70,7 @@
             case "Delete rating":
                 let trow = e.target.parentElement;
                 obj.rating = null;
-                ratingDelete(obj);
+                ratingUpdate(obj);
                 trow.children[4].innerText = null;
                 trow.children[5].innerText="Add rating";
                 break;
