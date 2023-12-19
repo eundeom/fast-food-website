@@ -260,9 +260,6 @@
     });
     document.querySelectorAll("form")[1].addEventListener("submit", (e) => {
       e.preventDefault();
-      let reqData = new FormData(e.target);
-      reqData.append("req", "signup");
-      xmlReq.Post(reqData).then(login, (rej) => console.log(rej));
     });
   </script>
 </html>
