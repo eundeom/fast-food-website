@@ -22,10 +22,8 @@
         case 'POST':
             $userData = json_decode(file_get_contents('php://input'), true);
             if ($userData['user'] === 'A') {
-                print_r(111);
                 addMenu($conn);
             } else{
-                print_r(222);
                 saveMenu($conn);
             }
             break;
