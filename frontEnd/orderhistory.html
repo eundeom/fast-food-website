@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>User ID</th>
+                <th>Date</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</body>
+<script type="module">
+    const ratingSubmit = (obj)=>{
+        console.log(obj);
+    }
+    const ratingDelete = (obj)=>{
+        console.log(obj);
+    }
+    const ratingBtn = (e,obj)=>{
+        switch(e.target.innerText){
+            case "Add rating":
+                let tr = e.target.parentElement;
+                let input = document.createElement("input");
+                input.type = "number";
+                tr.children[4].append(input);
+                tr.children[5].innerText="Submit";
+                break;
+            case "Submit":
+                let row = e.target.parentElement;
+                let rating = Number(row.children[4].children[0].value);
+                if(rating >= 0 && rating < 6 && rating != ''){
+                    obj.rating = rating;
+                    ratingSubmit(obj);
+                    row.children[4].children[0].remove();
+                    row.children[4].innerText = rating;
+                    row.children[5].innerText="Delete rating";
+                }else{
+                    alert("please input a rating from 0 to 5");
+                }
+                break;
+            case "Delete rating":
+                let trow = e.target.parentElement;
+                obj.rating = null;
+                ratingDelete(obj);
+                trow.children[4].innerText = null;
+                trow.children[5].innerText="Add rating";
+                break;
+        }
+    }
+    const load = (data)=>{
+        //console.log(data);
+        for(let obj of data){
+            let tr = document.createElement("tr");
+            for(let i in obj){
+                let td = document.createElement("td");
+                td.innerText = obj[i];
+                tr.append(td);
+            }
+            //debugger;
+            let btn = document.createElement("button");
+            if(obj.rating != null){
+                btn.innerText = "Delete rating";  
+            }else{
+                btn.innerText = "Add rating";
+            }
+            btn.addEventListener("click",(e)=>ratingBtn(e,obj));
+            tr.append(btn);
+            document.querySelector("tbody").append(tr);
+        }
+    }
+    const error = (msg)=>{
+        alert(msg);
+    }
+    let loadPromise = new Promise((load,error)=>{
+        const xhr = new XMLHttpRequest();
+        xhr.onload = ()=>{
+            if(xhr.status == 200){
+                load(JSON.parse(xhr.response));
+            }else{
+                error(xhr.statusText);
+            }
+        }
+        xhr.open("GET","http://localhost/php/Final_Project/orderhistory.php");
+        xhr.send();
+    }).then(load,error)
+</script>
+</html>
