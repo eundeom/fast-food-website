@@ -87,6 +87,38 @@
 
 
     function addMenu($conn) {
+
+        # read the inventory JSON file
+        $file = fopen("../data/inventory.json", "r") or die("Unable to open the ");
+        $data = fread($file, filesize("../data/inventory.json"));
+        fclose($file);
+        $data = json_decode($data); 
+
+        # Declare variables 
+        $id = null;
+        $prodName = null;
+        $quantity = null;
+        $price = null;
+        $food_type = null;
+        $prodDescr = null;
+
+        # insert the value to DB
+        $insertQuery = $conn->prepare("INSERT INTO menu_tb VALUES(?,?,?,?,?,?)");
+        $insertQuery->bind_param("isidss", $id, $prodName, $quantity, $price, $food_type, $prodDescr); //isidss
+
+        foreach($data as $e){
+            # set parameters and execute
+            $id = $e->id;
+            $prodName = $e->product;
+            $quantity = $e->amount;
+            $price = $e->cost;
+            $food_type = null;
+            $prodDescr = null;
+            
+            $insertQuery->execute();
+        }
+        $insertQuery->close();
+
         $data = json_decode(file_get_contents('php://input'), true);
         
         $sql = 'INSERT INTO menu_tb (prodName, quantity, price, prodDescr) VALUES (?, ?, ?, ?)';
