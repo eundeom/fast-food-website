@@ -173,19 +173,19 @@
               <div class="slider-tab"></div>
             </div>
             <div class="form-inner">
-              <form action="#" class="login">
+              <form class="login">
                 <div class="col-sm-7 mt-4 mb-3">
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked />
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="customer" checked />
                     <label class="form-check-label fw-bold" for="inlineRadio1">Customer</label>
                   </div>
                   <div class="form-check form-check-inline mb-4">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="adminstrator" />
                     <label class="form-check-label fw-bold" for="inlineRadio2">Adminstrator</label>
                   </div>
                 </div>
                 <div class="field mt-5">
-                  <input type="text" name="email" placeholder="Email Address" required />
+                  <input type="email" name="email" placeholder="Email Address" required />
                 </div>
                 <div class="field mt-5">
                   <input type="password" name="password" placeholder="Password" required />
@@ -195,7 +195,7 @@
                 </div>
                 <div class="signup-link fw-bold">Not a member? <a href="">Sign Up Now</a></div>
               </form>
-              <form action="#" class="signup">
+              <form class="signup">
                 <div class="field">
                   <input type="text" placeholder="First Name" required />
                 </div>
@@ -225,10 +225,7 @@
     </main>
     <footer></footer>
   </body>
-  <script type="module">
-    import XMLReq from "./js/XMLReq.js";
-    let xmlReq = new XMLReq("http://localhost/php/FinalProject/SunLoginSignin/BackEnd/main.php");
-
+  <script>
     const loginText = document.querySelector(".title-text .login");
     const loginForm = document.querySelector("form.login");
 
@@ -244,22 +241,19 @@
       loginForm.style.marginLeft = "-50%";
       loginText.style.marginLeft = "-50%";
     });
-    const login = (resData) => {
-      resData = JSON.parse(resData);
-      sessionStorage.setItem("id", resData.id);
-      sessionStorage.setItem("fname", resData.fname);
-      sessionStorage.setItem("user_type", resData.user_type);
-      location.replace("./menu.html");
-      console.log(resData);
-    };
-    document.querySelectorAll("form")[0].addEventListener("submit", (e) => {
+
+    // send to backend
+    loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      let reqData = new FormData(e.target);
-      reqData.append("req", "login");
-      xmlReq.Post(reqData).then(login, (rej) => console.log(rej));
-    });
-    document.querySelectorAll("form")[1].addEventListener("submit", (e) => {
-      e.preventDefault();
+      let loginData = new FormData(e.target);
+      const xhr = new XMLHttpRequest();
+      xhr.onload = () => {
+        if (xhr.status == 200) {
+          sessionStorage.setItem("user", xhr.responseText);
+        }
+      };
+      xhr.open("POST", "http://localhost/php/fast-food-website/fast-food-website/BackEnd/login.php");
+      xhr.send(loginData);
     });
   </script>
 </html>
