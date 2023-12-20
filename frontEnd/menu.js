@@ -17,16 +17,13 @@ class User {
     }
 }
 
-// let userInfo = sessionStorage.getItem("user");
-// let userObj = new User(userInfo.user_id, userInfo.user_fname, userInfo.user_lname, userInfo.user_type);
-// let userObj = JSON.parse(sessionStorage.getItem("user"));
-// console.log(JSON.parse(sessionStorage.getItem("user")).userType);
+let userInfo = JSON.parse(sessionStorage.getItem("user"));
 
 let selectedItems = [];
 
 
 $(document).ready(function () {
-    const userType = JSON.parse(sessionStorage.getItem('user')).userType;
+    const userType = userInfo.userType;
 
     // for ADMIN
     if(userType == "A"){
@@ -66,16 +63,12 @@ $(document).ready(function () {
         loadMenuForC();
 
         $('#saveMenuButton').on("click", function(){
+
             const userDataForC = {
-                user: JSON.parse(sessionStorage.getItem("user")).userType,
+                user: JSON.stringify(sessionStorage.getItem("user")),
                 prod: JSON.stringify(selectedItems),
             };
-            // const userDataForC = {
-            //     user: JSON.stringify(userObj),
-            //     prod: JSON.stringify(selectedItems),
-            // };
-            // console.log(userDataForC);
-            // console.log(JSON.parse(userDataForC.prod)[0]);
+
 
             $.ajax({
                 url: 'http://localhost/php/fast-food-website/BackEnd/menu.php',
@@ -84,11 +77,11 @@ $(document).ready(function () {
                 contentType: 'application/json',
                 success: function (response) {
                     console.log(response);
-                    // location.replace("./orderSales.html");
+                    location.replace("./orderSales.html");
                     // loadMenuForC();
                 },
                 error: function(error) {
-                    // location.replace("./orderSales.html");
+                    location.replace("./orderSales.html");
                     console.log(error); 
                 },
                 dataType: 'json',

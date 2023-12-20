@@ -177,11 +177,9 @@
 
     // if customer logged in, disabled ((add menu button))
     if (userObj.userType == "C") {
-      console.log(1);
       $("#addMenuButton").hide();
       $("#saveMenuButton").show();
     } else {
-      console.log(2);
       $("#addMenuButton").show();
       $("#saveMenuButton").hide();
     }
