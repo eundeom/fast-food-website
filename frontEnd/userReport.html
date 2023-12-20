@@ -51,4 +51,12 @@
 
     <script src="userReport.js"></script>
   </body>
+  <script>
+    let userType = JSON.parse(sessionStorage.getItem("user")).userType;
+    console.log(userInfo);
+
+    if (userType == "C") {
+      alert("You don't have permission");
+    }
+  </script>
 </html>

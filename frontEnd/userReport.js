@@ -22,18 +22,27 @@ const tablePoper = (data) => {
 };
 
 function loadUsers() {
-  $.ajax({
-    method: "GET",
-    url: "http://localhost/php/fast-food-website/BackEnd/userReport.php",
-    success: function (response) {
-      console.log(response);
-      const userList = $("#userTable");
-      userList.empty();
+  let userType = JSON.parse(sessionStorage.getItem("user")).userType;
+  if (userType == "C") {
+    $(".table.table-striped").hide();
+    var h1Element = document.createElement("h1");
+    var textNode = document.createTextNode("You don't have permission.");
+    h1Element.appendChild(textNode);
+    document.body.appendChild(h1Element);
+  } else {
+    $.ajax({
+      method: "GET",
+      url: "http://localhost/php/fast-food-website/BackEnd/userReport.php",
+      success: function (response) {
+        console.log(response);
+        const userList = $("#userTable");
+        userList.empty();
 
-      tablePoper(response);
-    },
-    error: function (error) {
-      console.log(error);
-    },
-  });
+        tablePoper(response);
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  }
 }
