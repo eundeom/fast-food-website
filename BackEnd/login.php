@@ -1,28 +1,47 @@
 <?php
-   header("Access-Control-Allow-Origin: *"); 
-   header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Origin: *"); 
+header("Access-Control-Allow-Headers: *");
 
-   if($_SERVER["REQUEST_METHOD"]=="POST"){
-      $userData = fopen("/Applications/XAMPP/xamppfiles/htdocs/PHP/fast-food-website/fast-food-website/data/users.json","r") or die(json_encode(['error' => 'Unable to open the file.']));
-      $user = json_decode(fread($userData,filesize("/Applications/XAMPP/xamppfiles/htdocs/PHP/fast-food-website/fast-food-website/data/users.json")));
-      fclose($userData);
-     if(isset($_POST["email"]) && isset($_POST["password"])){
-      foreach($user as $uObj){
-         if($uObj->email == $_POST["email"] && $uObj->password == $_POST["password"]){
-            echo(json_encode($uObj));
-            break;
-         }
-      }
-     }else{
-      $inputData = file_get_contents("php://input");
-      $inputData = json_decode($inputData);
-      foreach($user as $uObj){
-         if($uObj->email == $inputData->email && $uObj->password == $inputData->password){
-            echo json_encode($uObj);
-            break;
-         }
-      }
-     }
-   }
-   
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $userData = fopen("/Applications/XAMPP/xamppfiles/htdocs/PHP/fast-food-website/fast-food-website/data/users.json", "r") or die(json_encode(['error' => 'Unable to open the file.']));
+    $fileContents = fread($userData, filesize("/Applications/XAMPP/xamppfiles/htdocs/PHP/fast-food-website/fast-food-website/data/users.json"));
+    fclose($userData);
+    
+    $users = json_decode($fileContents, true);
+
+    if (isset($_POST["email"]) && isset($_POST["password"])) {
+        $email = $_POST["email"];
+        $password = $_POST["password"];
+
+        $foundUser = null;
+        foreach ($users as $user) {
+            if ($user['email'] == $email && $user['password'] == $password) {
+                $foundUser = $user;
+                break;
+            }
+        }
+
+        if ($foundUser) {
+            if ($_POST["inlineRadioOptions"] == 'customer' && $foundUser['user_type'] == 'C') {
+                echo json_encode([
+                    'email' => $foundUser['email'],
+                    'fname' => $foundUser['fname'],
+                    'lname' => $foundUser['lname'],
+                    'user_type' => $foundUser['user_type']
+                ]);
+            } elseif ($_POST["inlineRadioOptions"] == 'adminstrator' && $foundUser['user_type'] == 'A') {
+                echo json_encode([
+                    'email' => $foundUser['email'],
+                    'fname' => $foundUser['fname'],
+                    'lname' => $foundUser['lname'],
+                    'user_type' => $foundUser['user_type']
+                ]);
+            } else {
+                echo json_encode(['error' => 'Invalid user type.']);
+            }
+        } else {
+            echo json_encode(['error' => 'Invalid email or password.']);
+        }
+    }
+}
 ?>
