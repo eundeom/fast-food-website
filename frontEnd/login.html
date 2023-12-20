@@ -332,6 +332,7 @@
       xhr.onload = () => {
         if (xhr.status == 200) {
           console.log(xhr.statusText);
+          location.replace("./menuPage.html");
           sessionStorage.setItem("user", xhr.responseText);
         }
       };

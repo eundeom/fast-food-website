@@ -19,6 +19,8 @@ class User {
 
 // let userInfo = sessionStorage.getItem("user");
 // let userObj = new User(userInfo.user_id, userInfo.user_fname, userInfo.user_lname, userInfo.user_type);
+// let userObj = JSON.parse(sessionStorage.getItem("user"));
+// console.log(JSON.parse(sessionStorage.getItem("user")).userType);
 
 let selectedItems = [];
 
@@ -65,14 +67,14 @@ $(document).ready(function () {
 
         $('#saveMenuButton').on("click", function(){
             const userDataForC = {
-                user: userType,
+                user: JSON.parse(sessionStorage.getItem("user")).userType,
                 prod: JSON.stringify(selectedItems),
             };
             // const userDataForC = {
             //     user: JSON.stringify(userObj),
             //     prod: JSON.stringify(selectedItems),
             // };
-
+            // console.log(userDataForC);
             // console.log(JSON.parse(userDataForC.prod)[0]);
 
             $.ajax({
@@ -82,11 +84,11 @@ $(document).ready(function () {
                 contentType: 'application/json',
                 success: function (response) {
                     console.log(response);
-                    location.replace("./orderSales.html");
+                    // location.replace("./orderSales.html");
                     // loadMenuForC();
                 },
                 error: function(error) {
-                    location.replace("./orderSales.html");
+                    // location.replace("./orderSales.html");
                     console.log(error); 
                 },
                 dataType: 'json',
@@ -209,7 +211,6 @@ const FileHandlerForC = (clickedBtn, data) => {
     var itemPrice = parseFloat($(clickedBtn).parent().parent().children()[3]);
     var productName = $(clickedBtn).parent().parent().children().eq(1).text();
     let editItem = null;
-    console.log(itemPrice);
 
     // append at selectedItems
     // if it already exit in the selectedItem array -> change only amount
@@ -232,7 +233,6 @@ const FileHandlerForC = (clickedBtn, data) => {
         }
         });
     }
-    console.log(selectedItems);
 }
 
  const buttonPoperForC = (tr, data)=>{
@@ -270,7 +270,7 @@ function loadMenuForC() {
         url: 'http://localhost/php/fast-food-website/BackEnd/menu.php',
         // data:{ "req":""},
         success: function (response) {
-            console.log(response);
+            // console.log(response);
             const menuList = $('#menuTableForC');
             menuList.empty();
 

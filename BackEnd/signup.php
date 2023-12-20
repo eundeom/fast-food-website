@@ -9,7 +9,7 @@
         $email = $_POST['email'];
         $password = $_POST['password'];
 
-        $file_path = '/Applications/XAMPP/xamppfiles/htdocs/PHP/fast-food-website/fast-food-website/data/users.json';
+        $file_path = '../data/users.json';
 
         // Read json file
         $data = file_get_contents($file_path);
