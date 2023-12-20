@@ -195,27 +195,24 @@
                 </div>
                 <div class="signup-link fw-bold">Not a member? <a href="">Sign Up Now</a></div>
               </form>
-              <form action="#" class="signup">
+              <form action="../BackEnd/signup.php" class="signup" method="post">
                 <div class="field">
-                  <input type="text" placeholder="First Name" required />
+                  <input type="text" name="fname" placeholder="First Name" required />
                 </div>
                 <div class="field">
-                  <input type="text" placeholder="Last Name" required />
+                  <input type="text" name="lname" placeholder="Last Name" required />
                 </div>
                 <div class="field">
-                  <input type="tel" placeholder="Mobile" required />
+                  <input type="tel" name="mobile" placeholder="Mobile" required />
                 </div>
                 <div class="field">
-                  <input type="email" placeholder="Email Address" required />
+                  <input type="email" name="email" placeholder="Email Address" required />
                 </div>
                 <div class="field">
-                  <input type="password" placeholder="Password" required />
-                </div>
-                <div class="field mb-3">
-                  <input type="password" placeholder="Confirm password" required />
+                  <input type="password" name="password" placeholder="Password" required />
                 </div>
                 <div class="field btn mt-3">
-                  <button class="btn fw-bold col-8" style="background-color: rgb(0, 51, 255); color: white" type="submit">Sign Up</button>
+                  <button name="submit" value="submit" class="btn fw-bold col-8" style="background-color: rgb(0, 51, 255); color: white" type="submit">Sign Up</button>
                 </div>
               </form>
             </div>
