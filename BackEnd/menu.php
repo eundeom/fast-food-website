@@ -21,6 +21,7 @@
             break;
         case 'POST':
             $userData = json_decode(file_get_contents('php://input'), true);
+            // if ($userData['user']->user_type === 'A') {
             if ($userData['user'] === 'A') {
                 addMenu($conn);
             } else{
@@ -59,28 +60,51 @@
     $statusMsg = ''; 
 
     
+    function updateQuantity ($conn, $selected_amount, $prod_id){
+
+        $updateQuery = $conn->prepare("UPDATE menu_tb SET quantity = quantity - ? WHERE id = ?");
+        $updateQuery->bind_param("ii", $selected_amount, $prod_id);
+
+        $updateQuery->execute();
+
+        $updateQuery->close(); // Statement를 닫아줍니다.
+
+    }
+
     function saveMenu($conn){
-        // $selectedItems = json_decode($_POST['prod'], true);
         $data = json_decode(file_get_contents('php://input'), true);
         $selectedItems = json_decode($data['prod'],true);
-        $id = 0; 
-        $prod_id = ""; 
-        $prodName = ""; 
-        $quantity = 0;
-        
-        $insertQuery = $conn->prepare("INSERT INTO order_tb (id, prod_id, prodName, quantity) VALUES (?, ?, ?, ?)");
-        $insertQuery->bind_param("issi", $id, $prod_id, $prodName, $quantity);
+        $userInfo = json_decode($data['user'], true);
 
+        // Amount = quantity = selected Amount     Total values = amount * price
+        $prod_id = ""; $prodName = ""; $quantity = 0; $user_id = 0; $price = 0; $total_values = 0;$user_fname = ""; $user_lname = "";
         foreach($selectedItems as $item) {
-            print_r($item);
-            $id = 1;
-            $prod_id = $item['id']; //s
-            $prodName = $item['product']; //s
-            $quantity = $item['selctAmount']; //i
+            $prod_id = $item['id']; 
+            $quantity = $item['selctAmount'];  # 물건 선택한 개수
+            
+            $updateQuery = $conn->prepare("UPDATE menu_tb SET quantity = quantity - ? WHERE id = ?");
+            $updateQuery->bind_param("ii", $quantity, $prod_id);
+            $updateQuery->execute();
+            
+            // SELECT 쿼리 수정  -- quantity : 물건의 총 개수
+            $selectQuery = $conn->prepare("SELECT prodName, price FROM menu_tb WHERE id = ?");
+            $selectQuery->bind_param("i", $prod_id);
+            $selectQuery->execute();
+            $selectQuery->bind_result($prodName, $price);
+            $selectQuery->fetch();
+            $selectQuery->close();
+        
+            $user_id = 1001; // temporary user id
+            // $order_date = date("Y-m-d H:i:s");  // 현재 날짜와 시간
+            $total_values = $quantity * $price;
 
+            // // INSERT 쿼리 수정
+            $insertQuery = $conn->prepare("INSERT INTO order_tb (prod_id, prodName, quantity, price, user_id, user_fname, user_lname, total_values, order_date) SELECT ?, ?, ?, ?, ?, user_tb.fname, user_tb.lname, ?, NOW() FROM user_tb WHERE user_tb.id = ?");
+            $insertQuery->bind_param("isididi", $prod_id, $prodName, $quantity, $price, $user_id, $total_values, $user_id);
             $insertQuery->execute();
         }
-        $insertQuery->close();
+        
+        // $insertQuery->close();
         $conn->close();
 
     }

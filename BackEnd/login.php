@@ -3,8 +3,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $userData = fopen("/Applications/XAMPP/xamppfiles/htdocs/PHP/fast-food-website/fast-food-website/data/users.json", "r") or die(json_encode(['error' => 'Unable to open the file.']));
-    $fileContents = fread($userData, filesize("/Applications/XAMPP/xamppfiles/htdocs/PHP/fast-food-website/fast-food-website/data/users.json"));
+    $userData = fopen("/Applications/XAMPP/xamppfiles/htdocs/PHP/fast-food-website/data/users.json", "r") or die(json_encode(['error' => 'Unable to open the file.']));
+    $fileContents = fread($userData, filesize("/Applications/XAMPP/xamppfiles/htdocs/PHP/fast-food-website/data/users.json"));
     fclose($userData);
     
     $users = json_decode($fileContents, true);

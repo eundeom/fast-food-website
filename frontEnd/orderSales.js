@@ -1,5 +1,4 @@
 $(document).ready(function () {
-  debugger;
   loadOrder();
 });
 const buttonPoper = (tr) => {
@@ -23,10 +22,9 @@ const tablePoper = (data) => {
 
 let sales = [];
 function loadOrder() {
-  debugger;
   $.ajax({
     method: "GET",
-    url: "http://localhost/php/BackEnd/orderSales.php",
+    url: "http://localhost/php/fast-food-website/BackEnd/orderSales.php",
     success: function (response) {
       debugger;
       console.log(response);
@@ -41,7 +39,6 @@ function loadOrder() {
   });
 
   const salesTotal = () => {
-    debugger;
     let sum = 0;
     for (let s of sales) {
       for (let v of s) {

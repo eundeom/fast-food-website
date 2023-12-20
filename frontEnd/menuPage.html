@@ -170,17 +170,18 @@
   </body>
   <script>
     // temporary user information
-    let userinfo = { userid: 1, username: "Lily", userType: "A" };
+    let userinfo = { userid: 1001, username: "Lily", userType: "C" };
 
     sessionStorage.setItem("user", JSON.stringify(userinfo));
     let userObj = JSON.parse(sessionStorage.getItem("user"));
 
     // if customer logged in, disabled ((add menu button))
     if (userObj.userType == "C") {
-      //   console.log($(".modal-title"));
+      console.log(1);
       $("#addMenuButton").hide();
       $("#saveMenuButton").show();
     } else {
+      console.log(2);
       $("#addMenuButton").show();
       $("#saveMenuButton").hide();
     }
