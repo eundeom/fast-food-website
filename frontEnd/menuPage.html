@@ -47,6 +47,15 @@
       >
         Save Menu
       </button>
+      <button
+        type="button"
+        class="btn btn-secondary float-right"
+        data-toggle="modal"
+        data-target="#logoutModal"
+        id="logOutBtn"
+      >
+        log out
+      </button>
 
       <table class="table table-striped">
         <thead>
@@ -155,5 +164,10 @@
       $("#addMenuButton").show();
       $("#saveMenuButton").hide();
     }
+
+    $("#logOutBtn").on("click", function () {
+      sessionStorage.clear();
+      location.replace("./login.html");
+    });
   </script>
 </html>
