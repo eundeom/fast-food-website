@@ -19,10 +19,7 @@
       <nav>
         <form class="navbar">
           <div>
-            <a href="adminstrator.html">Home</a>
             <a href="menuPage.html">Menu</a>
-            <a href="userReport.html">Users Report</a>
-            <a href="orderSales.html">Order & Sales</a>
             <a href="orderhistory.html">Order History</a>
           </div>
         </form>
@@ -145,35 +142,9 @@
         </div>
       </div>
     </div>
-
-    <!-- Delete Menu Modal -->
-    <!-- <div class="modal fade" id="deleteMenuModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Delete Menu</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p id="deleteMenuText"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="deleteMenuBtn">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
     <script src="menu.js"></script>
   </body>
   <script>
-    // temporary user information
-    //let userinfo = { userid: 1, username: "Lily", userType: "A" };
-
-    //sessionStorage.setItem("user", JSON.stringify(userinfo));
     let userObj = JSON.parse(sessionStorage.getItem("user"));
 
     // if customer logged in, disabled ((add menu button))
