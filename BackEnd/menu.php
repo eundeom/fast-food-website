@@ -9,7 +9,7 @@
     header('Access-Control-Allow-Headers: Content-Type');
     include("./connect.php");
 
-    $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+    $conn = new mysqli($db_host, $db_user, $db_pass, $db_name); 
 
     if ($conn->connect_error) {
         die(json_encode(['error' => 'Database connection error.']));

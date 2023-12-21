@@ -1,60 +1,51 @@
 <?php
-    header("Access-Control-Allow-Origin: *");
-    include("./connect.php");
+header("Access-Control-Allow-Origin: *");
+include("./connect.php");
 
-    if(isset($_POST['submit'])){
-        $fname = $_POST['fname'];
-        $lname = $_POST['lname'];
-        $mobile = $_POST['mobile'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
-        $file_path = '../data/users.json';
-
-        // Read json file
-        $data = file_get_contents($file_path);
-        $data_array = json_decode($data, true);
-
-        // set user id
-        $last_item = end($data_array);
-        $new_id = ($last_item !== false) ? $last_item['id'] + 1 : 1;
-
-        // add new data in json
-        $data_new = array(
-            'id' => $new_id,
-            'fname' => $fname,
-            'lname' => $lname,
-            'mobile' => $mobile,
-            'email' => $email,
-            'password' => $password,
-            'user_type' => "C"
-        );
-
-        $data_array[] = $data_new;
-
-        // update json data
-        $new_data = json_encode($data_array);
-
-        if(file_put_contents($file_path, $new_data)){
-            echo "Success";
-        }
-
-        // add the data in mysql
-        $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        $sql = "INSERT INTO user_tb (id, fname, lname, mobile, email, password, user_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("issssss", $new_id, $fname, $lname, $mobile, $email, $password, "C");
-
-        if ($stmt->execute()) {
-            echo "MySQL: Data added successfully";
-        } else {
-            echo "MySQL: Failed to add data";
-        }
-        $stmt->close();
-        $conn->close();
+if ($conn->connect_error) {
+    die(json_encode(['error' => 'Database connection error.']));
+}
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    switch ($_POST['req']) {
+        case 'login':
+            $logCmd = "SELECT * FROM user_tb WHERE email='" . $_POST["email"] . "'";
+            $result = $conn->query($logCmd);
+            if ($result->num_rows > 0) {
+                $user = $result->fetch_assoc();
+                if ($_POST["password"] == $user["password"]) {
+                    session_start();
+                    $_SESSION["user"] = $user;
+                    $_SESSION["fname"] = $user["fname"];
+                    $_SESSION["lname"] = $user["lname"];
+                    $_SESSION["user_type"] = $user["user_type"];
+                    $response = [
+                        "id" => $user["id"],
+                        "fname" => $user["fname"],
+                        "lname" => $user["lname"],
+                        "user_type" => $user["user_type"]
+                    ];
+                    echo json_encode($response);
+                } else {
+                    http_response_code(400);
+                    echo ("Invalid Email/Password");
+                }
+            } else {
+                http_response_code(400);
+                echo ("Invalid Email/Password");
+            }
+            break;
+        case 'signup':
+            $insertCmd = $conn->prepare("INSERT INTO user_tb (fname,lname,mobile,email,password,user_type) VALUES (?,?,?,?,?,?)");
+            $insertCmd->bind_param("ssisss", $_POST["fname"], $_POST["lname"], $_POST["mobile"], $_POST["email"], $_POST["password"], $_POST["user_type"]);
+            $insertCmd->execute();
+            echo "Registration success";
+            $insertCmd->close();
+            $conn->close();
+            break;
+        default:
+            die(json_encode(['error' => 'Invalid request method.']));
     }
+}
 ?>
