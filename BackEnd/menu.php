@@ -59,6 +59,7 @@
                         WHERE f.id = $prodID");
             $insertQuery->execute();
         }
+        
         // $insertQuery->close();
         $conn->close();
 
