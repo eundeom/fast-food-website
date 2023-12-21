@@ -1,8 +1,4 @@
 <?php
-    error_reporting(E_ALL);
-    ini_set('display_errors', '1');
-?>
-<?php
     header('Content-Type: application/json');
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
@@ -22,19 +18,8 @@
         case 'POST':
             saveMenu($conn);
             break;
-        case 'PUT':
-            updateMenu($conn);
-            break;
-        case 'DELETE':
-            deleteMenu($conn);
-            break;
         default:
             die(json_encode(['error' => 'Invalid request method.']));
-    }
-
-    function tmpFunc($conn){
-        $data = json_decode(file_get_contents('php://input'), true);
-        print_r($data);
     }
 
     function getMenu($conn) {
@@ -49,58 +34,38 @@
         echo json_encode($data);
     }
 
-
-    
-    $statusMsg = ''; 
-
-    
-    function updateQuantity ($conn, $selected_amount, $prod_id){
-
-        $updateQuery = $conn->prepare("UPDATE menu_tb SET quantity = quantity - ? WHERE id = ?");
-        $updateQuery->bind_param("ii", $selected_amount, $prod_id);
-        $updateQuery->execute();
-        $updateQuery->close();
-
-    }
-
     function saveMenu($conn){
         $data = json_decode(file_get_contents('php://input'), true);
         $selectedItems = json_decode($data['prod'],true);
-        $user_id = json_decode($data['user'], true);
-        
-        $prod_id = ""; $prodName = ""; $quantity = 0; $price = 0; $total_values = 0;$user_fname = ""; $user_lname = "";
-        foreach($selectedItems as $item) {
-            $prod_id = $item['id']; 
-            $quantity = $item['selctAmount']; 
-            
-            $updateQuery = $conn->prepare("UPDATE menu_tb SET quantity = quantity - ? WHERE id = ?");
-            $updateQuery->bind_param("ii", $quantity, $prod_id);
-            $updateQuery->execute();
-            
-            // SELECT query  -- quantity : total
-            $selectQuery = $conn->prepare("SELECT prodName, price FROM menu_tb WHERE id = ?");
-            $selectQuery->bind_param("i", $prod_id);
-            $selectQuery->execute();
-            $selectQuery->bind_result($prodName, $price);
-            $selectQuery->fetch();
-            $selectQuery->close();
-        
-            // $user_id = 1001; // temporary user id
-            $total_values = $quantity * $price;
+        $userID = json_decode($data['user'], true);
 
-            // // INSERT query
-            $insertQuery = $conn->prepare("INSERT INTO order_tb (prod_id, prodName, quantity, price, user_id, user_fname, user_lname, total_values, order_date) SELECT ?, ?, ?, ?, ?, user_tb.fname, user_tb.lname, ?, NOW() FROM user_tb WHERE user_tb.id = ?");
-            $insertQuery->bind_param("isididi", $prod_id, $prodName, $quantity, $price, $user_id, $total_values, $user_id);
+        foreach($selectedItems as $item) {
+            $prodID = $item['id']; 
+            $quantity = $item['selctAmount']; 
+            $insertQuery = $conn->prepare("INSERT INTO order_tb (id, prod_id, prodName, quantity, price, user_id, user_fname, user_lname, total_values, order_date, rating)
+                        SELECT NULL as id,
+                            f.id,
+                            f.prodName,
+                            $quantity as quantity,
+                            f.price,
+                            u.id,
+                            u.fname,
+                            u.lname,
+                            f.price * $quantity as total_values,
+                            NOW() as order_date, 
+                            NULL as rating 
+                        FROM menu_tb f
+                        LEFT JOIN user_tb u ON u.id = $userID
+                        WHERE f.id = $prodID");
             $insertQuery->execute();
         }
-
-        
         // $insertQuery->close();
         $conn->close();
 
     }
 
 
+    /// from JSON to DB and read from DB
     function addMenu($conn) {
 
         # read the inventory JSON file
@@ -149,54 +114,23 @@
         $stmt->close();
     }
 
-    function updateMenu($conn) {
-        $data = json_decode(file_get_contents('php://input'), true);
 
-        $sql = 'UPDATE menu_tb SET prodName = ?, quantity = ?, price = ?, prodDescr = ? WHERE id = ?';
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('sidsi', $data['prodName'], $data['quantity'], $data['price'], $data['prodDescr'], $data['id']);
+    // function addMenuForC($conn) {
+    //     print_r($_POST["prod"]);
+    //     $data = json_decode(file_get_contents('php://input'), true);
 
-        if ($stmt->execute()) {
-            echo json_encode(['message' => 'Menu deleted successfully.']);
-        } else {
-            echo json_encode(['error' => 'Menu deletion failed.']);
-        }
-    
-        $stmt->close();
-    }
+    //     $sql = 'INSERT INTO menu_tb (prodName, quantity, price, prodDescr) VALUES (?, ?, ?, ?)';
+    //     $stmt = $conn->prepare($sql);
+    //     $stmt->bind_param('sids', $data['prodName'], $data['quantity'], $data['price'], $data['prodDescr']);
 
-    function deleteMenu($conn) {
-        $data = json_decode(file_get_contents('php://input'), true);
+    //     if ($stmt->execute()) {
+    //         echo json_encode(['message' => 'Menu added successfully.']);
+    //     } else {
+    //         echo json_encode(['error' => 'Menu addition failed.']);
+    //     }
 
-        $sql = 'DELETE FROM menu_tb WHERE id = ?';
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('i', $data['id']);
-
-        if ($stmt->execute()) {
-            echo json_encode(['message' => 'Menu deleted successfully.']);
-        } else {
-            echo json_encode(['error' => 'Menu deletion failed.']);
-        }
-
-        $stmt->close();
-    }
-
-    function addMenuForC($conn) {
-        print_r($_POST["prod"]);
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        $sql = 'INSERT INTO menu_tb (prodName, quantity, price, prodDescr) VALUES (?, ?, ?, ?)';
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('sids', $data['prodName'], $data['quantity'], $data['price'], $data['prodDescr']);
-
-        if ($stmt->execute()) {
-            echo json_encode(['message' => 'Menu added successfully.']);
-        } else {
-            echo json_encode(['error' => 'Menu addition failed.']);
-        }
-
-        $stmt->close();
-    }
+    //     $stmt->close();
+    // }
 
     // $conn->close();
 ?>
