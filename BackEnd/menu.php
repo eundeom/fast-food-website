@@ -42,6 +42,12 @@
         foreach($selectedItems as $item) {
             $prodID = $item['id']; 
             $quantity = $item['selctAmount']; 
+
+            $updateQuery = $conn->prepare("UPDATE menu_tb SET quantity = quantity - ? WHERE id = ?");
+            $updateQuery->bind_param("ii", $quantity, $prodID);
+            $updateQuery->execute();
+
+
             $insertQuery = $conn->prepare("INSERT INTO order_tb (id, prod_id, prodName, quantity, price, user_id, user_fname, user_lname, total_values, order_date, rating)
                         SELECT NULL as id,
                             f.id,
