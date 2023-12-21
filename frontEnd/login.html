@@ -174,7 +174,6 @@
             </div>
             <div class="form-inner">
               <form class="login">
-                
                 <div class="field mt-5">
                   <input type="email" name="email" placeholder="Email Address" required />
                 </div>
@@ -204,7 +203,7 @@
                   <input type="text" name="lname" placeholder="Last Name" required />
                 </div>
                 <div class="field">
-                  <input type="tel" name="mobile" placeholder="Mobile" required />
+                  <input type="text" name="mobile" placeholder="Mobile" required />
                 </div>
                 <div class="field">
                   <input type="email" name="email" placeholder="Email Address" required />
@@ -243,20 +242,20 @@
       return false;
     };
 
-    const sessionVerify = (data)=>{
-      sessionStorage.setItem("sid",data[0].sid);
-      console.log(data[1]);
-      if(data[1].user_type=="C"){
-        location.replace("./menuPage.html");
-      }else{
-        location.replace("./adminstrator.html");
-      }
-    }
+    const sessionVerify = (data) => {
+      sessionStorage.setItem("user", JSON.stringify(data));
+      // console.log(data);
+      // if (data[1].user_type == "C") {
+      location.replace("./menuPage.html");
+      // } else {
+      //   location.replace("./adminstrator.html");
+      // }
+    };
     // send to backend
     loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
       let loginData = new FormData(e.target);
-      loginData.append("req","login");
+      loginData.append("req", "login");
       const xhr = new XMLHttpRequest();
       xhr.onload = () => {
         if (xhr.status == 200) {
@@ -265,21 +264,21 @@
           //sessionStorage.setItem("user", xhr.responseText);
         }
       };
-      xhr.open("POST", "http://localhost/php/fast-food-website/BackEnd/signup.php");
+      xhr.open("POST", "http://localhost/php/fast-food-website/fast-food-website/BackEnd/signup.php");
       xhr.send(loginData);
     });
-    signupForm.addEventListener("submit", (e)=>{
+    signupForm.addEventListener("submit", (e) => {
       e.preventDefault();
       let signupData = new FormData(e.target);
-      signupData.append("req","signup");
+      signupData.append("req", "signup");
       const xhr = new XMLHttpRequest();
-      xhr.onload = ()=>{
-        if(xhr.status==200){
+      xhr.onload = () => {
+        if (xhr.status == 200) {
           console.log(xhr.response);
         }
-      }
-      xhr.open("POST","http://localhost/php/fast-food-website/BackEnd/signup.php");
+      };
+      xhr.open("POST", "http://localhost/php/fast-food-website/fast-food-website/BackEnd/signup.php");
       xhr.send(signupData);
-    })
+    });
   </script>
 </html>
