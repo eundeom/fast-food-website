@@ -177,7 +177,7 @@
     let userObj = JSON.parse(sessionStorage.getItem("user"));
 
     // if customer logged in, disabled ((add menu button))
-    if (userObj.userType == "C") {
+    if (userObj.user_type == "C") {
       $("#addMenuButton").hide();
       $("#saveMenuButton").show();
     } else {

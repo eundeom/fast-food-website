@@ -21,8 +21,7 @@
             break;
         case 'POST':
             $userData = json_decode(file_get_contents('php://input'), true);
-            // if ($userData['user'] === 'A') {
-            if ($userData['user']->userType === 'A') {
+            if ($userData['user']->user_type === 'A') {
                 addMenu($conn);
             } else{
                 saveMenu($conn);
@@ -72,7 +71,7 @@
     function saveMenu($conn){
         $data = json_decode(file_get_contents('php://input'), true);
         $selectedItems = json_decode($data['prod'],true);
-        // $user_id = json_decode($data['user']->user_id, true);
+        // $user_id = json_decode($data['user']->id, true);
 
         $prod_id = ""; $prodName = ""; $quantity = 0; $user_id = 0; $price = 0; $total_values = 0;$user_fname = ""; $user_lname = "";
         foreach($selectedItems as $item) {

@@ -1,7 +1,7 @@
 <?php
 $db_host = 'localhost';
-$db_user = 'root';
-$db_pass = '@phpsql';
+$db_user = 'admin';
+$db_pass = 'test1234';
 $db_name = 'food_db';
 
 ?>
