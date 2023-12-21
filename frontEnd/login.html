@@ -361,7 +361,8 @@
       xhr.onload = () => {
         if (xhr.status == 200) {
           console.log(xhr.response);
-          location.replace("./");
+          loginBtn.click();
+          alert("Sign up success!");
         }
       };
       xhr.open(
