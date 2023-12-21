@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
-        $userid = 1017;
+        $userid = $_GET["userID"];
         $selectQuery = "SELECT * FROM order_tb WHERE user_id=$userid";
         $data = $conn->query($selectQuery);
         $outData = [];
@@ -28,7 +28,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
     case 'POST':
         $json = file_get_contents("php://input"); 
         $data = json_decode($json);
-        $replaceQuery = $conn->prepare("REPLACE INTO order_tb VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $replaceQuery = $conn->prepare("REPLACE INTO order_tb VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $replaceQuery->bind_param('iisidissdsi', $data->id, $data->prod_id, $data->prodName, $data->quantity, $data->price, $data->user_id, $data->user_fname, $data->user_lname, $data->total_values, $data->order_date, $data->rating);
         $replaceQuery->execute();
         if ($replaceQuery->affected_rows > 0) {
