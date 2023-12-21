@@ -327,11 +327,11 @@
 
     const sessionVerify = (data) => {
       sessionStorage.setItem("user", JSON.stringify(data));
-      console.log(data);
+      console.log(data.user_type);
       if (data.user_type == "C") {
         location.replace("./menuPage.html");
       } else {
-        location.replace("./adminstrator.html");
+        location.replace("./Adm_menu.html");
       }
     };
     // send to backend
