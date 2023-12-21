@@ -21,7 +21,8 @@
             break;
         case 'POST':
             $userData = json_decode(file_get_contents('php://input'), true);
-            if ($userData['user'] === 'A') {
+            // if ($userData['user'] === 'A') {
+            if ($userData['user']->userType === 'A') {
                 addMenu($conn);
             } else{
                 saveMenu($conn);
@@ -59,28 +60,47 @@
     $statusMsg = ''; 
 
     
+    function updateQuantity ($conn, $selected_amount, $prod_id){
+
+        $updateQuery = $conn->prepare("UPDATE menu_tb SET quantity = quantity - ? WHERE id = ?");
+        $updateQuery->bind_param("ii", $selected_amount, $prod_id);
+        $updateQuery->execute();
+        $updateQuery->close();
+
+    }
+
     function saveMenu($conn){
-        // $selectedItems = json_decode($_POST['prod'], true);
         $data = json_decode(file_get_contents('php://input'), true);
         $selectedItems = json_decode($data['prod'],true);
-        $id = 0; 
-        $prod_id = ""; 
-        $prodName = ""; 
-        $quantity = 0;
-        
-        $insertQuery = $conn->prepare("INSERT INTO order_tb (id, prod_id, prodName, quantity) VALUES (?, ?, ?, ?)");
-        $insertQuery->bind_param("issi", $id, $prod_id, $prodName, $quantity);
+        // $user_id = json_decode($data['user']['user_id'], true);
 
+        $prod_id = ""; $prodName = ""; $quantity = 0; $user_id = 0; $price = 0; $total_values = 0;$user_fname = ""; $user_lname = "";
         foreach($selectedItems as $item) {
-            print_r($item);
-            $id = 1;
-            $prod_id = $item['id']; //s
-            $prodName = $item['product']; //s
-            $quantity = $item['selctAmount']; //i
+            $prod_id = $item['id']; 
+            $quantity = $item['selctAmount']; 
+            
+            $updateQuery = $conn->prepare("UPDATE menu_tb SET quantity = quantity - ? WHERE id = ?");
+            $updateQuery->bind_param("ii", $quantity, $prod_id);
+            $updateQuery->execute();
+            
+            // SELECT query  -- quantity : total
+            $selectQuery = $conn->prepare("SELECT prodName, price FROM menu_tb WHERE id = ?");
+            $selectQuery->bind_param("i", $prod_id);
+            $selectQuery->execute();
+            $selectQuery->bind_result($prodName, $price);
+            $selectQuery->fetch();
+            $selectQuery->close();
+        
+            $user_id = 1001; // temporary user id
+            $total_values = $quantity * $price;
 
+            // // INSERT query
+            $insertQuery = $conn->prepare("INSERT INTO order_tb (prod_id, prodName, quantity, price, user_id, user_fname, user_lname, total_values, order_date) SELECT ?, ?, ?, ?, ?, user_tb.fname, user_tb.lname, ?, NOW() FROM user_tb WHERE user_tb.id = ?");
+            $insertQuery->bind_param("isididi", $prod_id, $prodName, $quantity, $price, $user_id, $total_values, $user_id);
             $insertQuery->execute();
         }
-        $insertQuery->close();
+        
+        // $insertQuery->close();
         $conn->close();
 
     }

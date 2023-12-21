@@ -7,6 +7,6 @@ CREATE TABLE `food_db`.`order_tb` (
   `user_id` INT NULL,
   `user_fname` VARCHAR(50) NULL,
   `user_lname` VARCHAR(50) NULL,
-  `total_amount` DECIMAL(10,2) NULL,
+  `total_values` DECIMAL(10,2) NULL,
   `order_date` TIMESTAMP NULL,
   PRIMARY KEY (`id`));

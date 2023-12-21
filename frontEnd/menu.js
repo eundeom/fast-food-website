@@ -8,11 +8,22 @@ class Item {
     }
 }
 
+class User {
+    constructor(user_id, user_fname, user_lname, user_type){
+        this.user_id = user_id;
+        this.user_fname = user_fname;
+        this.user_lname = user_lname;
+        this.user_type = user_type;
+    }
+}
+
+let userInfo = JSON.parse(sessionStorage.getItem("user"));
+
 let selectedItems = [];
 
 
 $(document).ready(function () {
-    const userType = JSON.parse(sessionStorage.getItem('user')).userType;
+    const userType = userInfo.userType;
 
     // for ADMIN
     if(userType == "A"){
@@ -33,7 +44,7 @@ $(document).ready(function () {
             };
 
             $.ajax({
-                url: 'http://localhost/php/fast_food_website/BackEnd/menu.php',
+                url: 'http://localhost/php/fast-food-website/BackEnd/menu.php',
                 method: 'POST',
                 // data: JSON.stringify({ prodName, quantity, price, prodDescr }),
                 data: JSON.stringify(userDataForA),
@@ -52,26 +63,26 @@ $(document).ready(function () {
         loadMenuForC();
 
         $('#saveMenuButton').on("click", function(){
+
             const userDataForC = {
-                user: userType,
+                user: JSON.stringify(sessionStorage.getItem("user")),
                 prod: JSON.stringify(selectedItems),
             };
 
-            // console.log(JSON.parse(userDataForC.prod)[0]);
 
             $.ajax({
-                url: 'http://localhost/php/fast_food_website/BackEnd/menu.php',
+                url: 'http://localhost/php/fast-food-website/BackEnd/menu.php',
                 method: 'POST',
                 data: JSON.stringify(userDataForC),
                 contentType: 'application/json',
                 success: function (response) {
                     console.log(response);
-                    loadMenuForC();
-                    location.replace("./userReport.html");
+                    location.replace("./orderSales.html");
+                    // loadMenuForC();
                 },
-                error: function(result) {
-                    console.log(result.responseText);
-                    console.log(result); 
+                error: function(error) {
+                    location.replace("./orderSales.html");
+                    console.log(error); 
                 },
                 dataType: 'json',
             });
@@ -84,7 +95,7 @@ $(document).ready(function () {
 
 const deleteHandler = (id) =>{
     $.ajax({
-        url: 'http://localhost/php/fast_food_website/BackEnd/menu.php',
+        url: 'http://localhost/php/fast-food-website/BackEnd/menu.php',
         method: 'DELETE',
         data: JSON.stringify({ id }),
         contentType: 'application/json',
@@ -104,7 +115,7 @@ const EditHandler = (id, prodName, quantity, price, prodDescr) =>{
     })
     
     $.ajax({
-        url: 'http://localhost/php/fast_food_website/BackEnd/menu.php',
+        url: 'http://localhost/php/fast-food-website/BackEnd/menu.php',
         method: 'PUT',
         data: JSON.stringify({ id, prodName, quantity, price, prodDescr }),
         contentType: 'application/json',
@@ -129,12 +140,7 @@ const buttonPoper = (tr)=>{
     let file = document.createElement("input");
     file.type="file";
     file.name="file";
-    // let submit = document.createElement("input");
-    // submit.type="submit";
-    // submit.name="submit";
-    // submit.addEventListener("click", ()=>{
-    //     FileHandler();
-    // });
+    
     td.append(editBt,delBt);
     tr.append(td);
     editBt.addEventListener("click", ()=>{
@@ -174,7 +180,7 @@ const tablePoper = (data) => {
 function loadMenu() {
     $.ajax({
         method: 'GET',
-        url: 'http://localhost/php/fast_food_website/BackEnd/menu.php',
+        url: 'http://localhost/php/fast-food-website/BackEnd/menu.php',
         success: function (response) {
             console.log(response);
             const menuList = $('#menuTable');
@@ -198,7 +204,6 @@ const FileHandlerForC = (clickedBtn, data) => {
     var itemPrice = parseFloat($(clickedBtn).parent().parent().children()[3]);
     var productName = $(clickedBtn).parent().parent().children().eq(1).text();
     let editItem = null;
-    console.log(productName);
 
     // append at selectedItems
     // if it already exit in the selectedItem array -> change only amount
@@ -221,7 +226,6 @@ const FileHandlerForC = (clickedBtn, data) => {
         }
         });
     }
-    console.log(selectedItems);
 }
 
  const buttonPoperForC = (tr, data)=>{
@@ -256,10 +260,10 @@ const tablePoperForC = (data) => {
 function loadMenuForC() {
     $.ajax({
         method: 'GET',
-        url: 'http://localhost/php/fast_food_website/BackEnd/menu.php',
+        url: 'http://localhost/php/fast-food-website/BackEnd/menu.php',
         // data:{ "req":""},
         success: function (response) {
-            console.log(response);
+            // console.log(response);
             const menuList = $('#menuTableForC');
             menuList.empty();
 

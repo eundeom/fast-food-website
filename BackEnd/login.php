@@ -3,8 +3,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $userData = fopen("/Applications/XAMPP/xamppfiles/htdocs/PHP/fast-food-website/fast-food-website/data/users.json", "r") or die(json_encode(['error' => 'Unable to open the file.']));
-    $fileContents = fread($userData, filesize("/Applications/XAMPP/xamppfiles/htdocs/PHP/fast-food-website/fast-food-website/data/users.json"));
+    $userData = fopen("../data/users.json", "r") or die(json_encode(['error' => 'Unable to open the file.']));
+    $fileContents = fread($userData, filesize("../data/users.json"));
     fclose($userData);
     
     $users = json_decode($fileContents, true);
@@ -27,14 +27,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'email' => $foundUser['email'],
                     'fname' => $foundUser['fname'],
                     'lname' => $foundUser['lname'],
-                    'user_type' => $foundUser['user_type']
+                    'userType' => $foundUser['user_type']
                 ]);
             } elseif ($_POST["inlineRadioOptions"] == 'adminstrator' && $foundUser['user_type'] == 'A') {
                 echo json_encode([
                     'email' => $foundUser['email'],
                     'fname' => $foundUser['fname'],
                     'lname' => $foundUser['lname'],
-                    'user_type' => $foundUser['user_type']
+                    'userType' => $foundUser['user_type']
                 ]);
             } else {
                 echo json_encode(['error' => 'Invalid user type.']);
