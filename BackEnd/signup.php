@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     $_SESSION["lname"] = $user["lname"];
                     $_SESSION["user_type"] = $user["user_type"];
                     $response = [
-                        "id" => $user["id"],
+                        "id" => intval($user["id"]),
                         "fname" => $user["fname"],
                         "lname" => $user["lname"],
                         "user_type" => $user["user_type"]

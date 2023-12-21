@@ -63,9 +63,9 @@ $(document).ready(function () {
         loadMenuForC();
 
         $('#saveMenuButton').on("click", function(){
-
+            
             const userDataForC = {
-                user: JSON.stringify(sessionStorage.getItem("user")),
+                user: JSON.parse(sessionStorage.getItem("user")).id,
                 prod: JSON.stringify(selectedItems),
             };
 
@@ -77,11 +77,11 @@ $(document).ready(function () {
                 contentType: 'application/json',
                 success: function (response) {
                     console.log(response);
-                    location.replace("./orderSales.html");
+                    // location.replace("./orderhistory.html");
                     // loadMenuForC();
                 },
                 error: function(error) {
-                    location.replace("./orderSales.html");
+                    // location.replace("./orderhistory.html");
                     console.log(error); 
                 },
                 dataType: 'json',
@@ -226,6 +226,7 @@ const FileHandlerForC = (clickedBtn, data) => {
         }
         });
     }
+    console.log(selectedItems);
 }
 
  const buttonPoperForC = (tr, data)=>{

@@ -20,12 +20,7 @@
             getMenu($conn);
             break;
         case 'POST':
-            $userData = json_decode(file_get_contents('php://input'), true);
-            if ($userData['user']->user_type === 'A') {
-                addMenu($conn);
-            } else{
-                saveMenu($conn);
-            }
+            saveMenu($conn);
             break;
         case 'PUT':
             updateMenu($conn);
@@ -71,9 +66,9 @@
     function saveMenu($conn){
         $data = json_decode(file_get_contents('php://input'), true);
         $selectedItems = json_decode($data['prod'],true);
-        // $user_id = json_decode($data['user']->id, true);
-
-        $prod_id = ""; $prodName = ""; $quantity = 0; $user_id = 0; $price = 0; $total_values = 0;$user_fname = ""; $user_lname = "";
+        $user_id = json_decode($data['user'], true);
+        
+        $prod_id = ""; $prodName = ""; $quantity = 0; $price = 0; $total_values = 0;$user_fname = ""; $user_lname = "";
         foreach($selectedItems as $item) {
             $prod_id = $item['id']; 
             $quantity = $item['selctAmount']; 
@@ -90,7 +85,7 @@
             $selectQuery->fetch();
             $selectQuery->close();
         
-            $user_id = 1001; // temporary user id
+            // $user_id = 1001; // temporary user id
             $total_values = $quantity * $price;
 
             // // INSERT query
@@ -98,6 +93,7 @@
             $insertQuery->bind_param("isididi", $prod_id, $prodName, $quantity, $price, $user_id, $total_values, $user_id);
             $insertQuery->execute();
         }
+
         
         // $insertQuery->close();
         $conn->close();
