@@ -173,19 +173,20 @@
               <div class="slider-tab"></div>
             </div>
             <div class="form-inner">
-              <form action="#" class="login">
+              <form class="login">
+                <!--
                 <div class="col-sm-7 mt-4 mb-3">
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked />
+                    <input class="form-check-input" type="radio" name="user_type" id="inlineRadio1" value="C" checked />
                     <label class="form-check-label fw-bold" for="inlineRadio1">Customer</label>
                   </div>
                   <div class="form-check form-check-inline mb-4">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
+                    <input class="form-check-input" type="radio" name="user_type" id="inlineRadio2" value="A" />
                     <label class="form-check-label fw-bold" for="inlineRadio2">Adminstrator</label>
                   </div>
-                </div>
+                </div>-->
                 <div class="field mt-5">
-                  <input type="text" name="email" placeholder="Email Address" required />
+                  <input type="email" name="email" placeholder="Email Address" required />
                 </div>
                 <div class="field mt-5">
                   <input type="password" name="password" placeholder="Password" required />
@@ -195,27 +196,34 @@
                 </div>
                 <div class="signup-link fw-bold">Not a member? <a href="">Sign Up Now</a></div>
               </form>
-              <form action="#" class="signup">
-                <div class="field">
-                  <input type="text" placeholder="First Name" required />
+              <form action="../BackEnd/signup.php" class="signup" method="post">
+                <div class="col-sm-7 mt-4 mb-3">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="user_type" id="inlineRadio3" value="C" checked />
+                    <label class="form-check-label fw-bold" for="inlineRadio3">Customer</label>
+                  </div>
+                  <div class="form-check form-check-inline mb-4">
+                    <input class="form-check-input" type="radio" name="user_type" id="inlineRadio4" value="A" />
+                    <label class="form-check-label fw-bold" for="inlineRadio4">Adminstrator</label>
+                  </div>
                 </div>
                 <div class="field">
-                  <input type="text" placeholder="Last Name" required />
+                  <input type="text" name="fname" placeholder="First Name" required />
                 </div>
                 <div class="field">
-                  <input type="tel" placeholder="Mobile" required />
+                  <input type="text" name="lname" placeholder="Last Name" required />
                 </div>
                 <div class="field">
-                  <input type="email" placeholder="Email Address" required />
+                  <input type="tel" name="mobile" placeholder="Mobile" required />
                 </div>
                 <div class="field">
-                  <input type="password" placeholder="Password" required />
+                  <input type="email" name="email" placeholder="Email Address" required />
                 </div>
-                <div class="field mb-3">
-                  <input type="password" placeholder="Confirm password" required />
+                <div class="field">
+                  <input type="password" name="password" placeholder="Password" required />
                 </div>
                 <div class="field btn mt-3">
-                  <button class="btn fw-bold col-8" style="background-color: rgb(0, 51, 255); color: white" type="submit">Sign Up</button>
+                  <button name="submit" value="submit" class="btn fw-bold col-8" style="background-color: rgb(0, 51, 255); color: white" type="submit">Sign Up</button>
                 </div>
               </form>
             </div>
@@ -225,41 +233,64 @@
     </main>
     <footer></footer>
   </body>
-  <script type="module">
-    import XMLReq from "./js/XMLReq.js";
-    let xmlReq = new XMLReq("http://localhost/php/FinalProject/SunLoginSignin/BackEnd/main.php");
-
+  <script>
     const loginText = document.querySelector(".title-text .login");
     const loginForm = document.querySelector("form.login");
-
-    document.querySelector("label.login").addEventListener("click", () => {
-      loginForm.style.marginLeft = "0%";
-      loginText.style.marginLeft = "0%";
-    });
-    const signupLink = document.querySelector("form .signup-link a").addEventListener("click", () => {
-      signupBtn.click();
-      return false;
-    });
-    document.querySelector("label.signup").addEventListener("click", () => {
+    const loginBtn = document.querySelector("label.login");
+    const signupBtn = document.querySelector("label.signup");
+    const signupLink = document.querySelector("form .signup-link a");
+    const signupForm = document.querySelector("form.signup");
+    signupBtn.onclick = () => {
       loginForm.style.marginLeft = "-50%";
       loginText.style.marginLeft = "-50%";
-    });
-    const login = (resData) => {
-      resData = JSON.parse(resData);
-      sessionStorage.setItem("id", resData.id);
-      sessionStorage.setItem("fname", resData.fname);
-      sessionStorage.setItem("user_type", resData.user_type);
-      location.replace("./menu.html");
-      console.log(resData);
     };
-    document.querySelectorAll("form")[0].addEventListener("submit", (e) => {
+    loginBtn.onclick = () => {
+      loginForm.style.marginLeft = "0%";
+      loginText.style.marginLeft = "0%";
+    };
+    signupLink.onclick = () => {
+      signupBtn.click();
+      return false;
+    };
+
+    const sessionVerify = (data)=>{
+      sessionStorage.setItem("user",JSON.stringify(data));
+      //sessionStorage.setItem("sid",data[0].sid);
+      //console.log(data[1]);
+      if(data.user_type=="C"){
+        location.replace("./menuPage.html");
+      }else{
+        location.replace("./adminstrator.html");
+      }
+    }
+    // send to backend
+    loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      let reqData = new FormData(e.target);
-      reqData.append("req", "login");
-      xmlReq.Post(reqData).then(login, (rej) => console.log(rej));
+      let loginData = new FormData(e.target);
+      loginData.append("req","login");
+      const xhr = new XMLHttpRequest();
+      xhr.onload = () => {
+        if (xhr.status == 200) {
+          sessionVerify(JSON.parse(xhr.response));
+          //console.log((xhr.response));
+          //sessionStorage.setItem("user", xhr.responseText);
+        }
+      };
+      xhr.open("POST", "http://localhost/php/fast-food-website/BackEnd/signup.php");
+      xhr.send(loginData);
     });
-    document.querySelectorAll("form")[1].addEventListener("submit", (e) => {
+    signupForm.addEventListener("submit", (e)=>{
       e.preventDefault();
-    });
+      let signupData = new FormData(e.target);
+      signupData.append("req","signup");
+      const xhr = new XMLHttpRequest();
+      xhr.onload = ()=>{
+        if(xhr.status==200){
+          console.log(xhr.response);
+        }
+      }
+      xhr.open("POST","http://localhost/php/fast-food-website/BackEnd/signup.php");
+      xhr.send(signupData);
+    })
   </script>
 </html>
