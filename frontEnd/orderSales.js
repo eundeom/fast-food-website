@@ -25,6 +25,7 @@ function loadOrder() {
   $.ajax({
     method: "GET",
     url: "http://localhost/php/fast-food-website/BackEnd/orderSales.php",
+    data: { userid: JSON.stringify(sessionStorage.getItem("user")) },
     success: function (response) {
       debugger;
       console.log(response);

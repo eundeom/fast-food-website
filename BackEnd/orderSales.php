@@ -21,6 +21,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
 function getOrder($conn) {
     $result = $conn->query('SELECT * FROM order_tb');
+
+    // user's info
+    // $data = json_decode(file_get_contents('php://input'), true);
+    // $user_id = $data['userid'];
+    // $user_id = 1001;
+    // $result = $conn->query('SELECT * FROM order_tb WHERE user_id = ?');
+    // $result->bind_param("i", $user_id);
+
     $data = [];
 
     while ($row = $result->fetch_assoc()) {
