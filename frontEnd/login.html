@@ -331,14 +331,12 @@
       const xhr = new XMLHttpRequest();
       xhr.onload = () => {
         if (xhr.status == 200) {
-          console.log(xhr.statusText);
-          location.replace("./menuPage.html");
           sessionStorage.setItem("user", xhr.responseText);
         }
       };
       xhr.open(
         "POST",
-        "http://localhost/php/fast-food-website/BackEnd/login.php"
+        "http://localhost/php/fast-food-website/fast-food-website/BackEnd/login.php"
       );
       xhr.send(loginData);
     });
