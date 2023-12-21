@@ -9,4 +9,5 @@ CREATE TABLE `food_db`.`order_tb` (
   `user_lname` VARCHAR(50) NULL,
   `total_values` DECIMAL(10,2) NULL,
   `order_date` TIMESTAMP NULL,
+  `rating` INT NUL,
   PRIMARY KEY (`id`));
