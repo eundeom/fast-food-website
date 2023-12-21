@@ -34,23 +34,31 @@
           </form>
         </nav>
     </header>
-    <h1>Order History</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>Product</th>
-                <th>User ID</th>
-                <th>Date</th>
-                <th>Rating</th>
-            </tr>
-        </thead>
-        <tbody>
-
-        </tbody>
-    </table>
+    <div class="container">
+        <h1 class="text-center my-4">Order History</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Product ID</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>User ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Total Values</th>
+                    <th>Date</th>
+                    <th>Rating</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 </body>
 <script type="module">
+    let user = JSON.parse(sessionStorage.getItem("user"));
     const postLoad = (data)=>{
         console.log(data)
     }
@@ -67,7 +75,6 @@
             xhr.open("POST","http://localhost/php/fast-food-website/BackEnd/orderhistory.php");
             xhr.send(JSON.stringify(obj));
         }).then(postLoad,error)
-        //console.log(obj);
     }
     const ratingBtn = (e,obj)=>{
         switch(e.target.innerText){
@@ -75,18 +82,18 @@
                 let tr = e.target.parentElement;
                 let input = document.createElement("input");
                 input.type = "number";
-                tr.children[4].append(input);
-                tr.children[5].innerText="Submit";
+                tr.children[10].append(input);
+                tr.children[11].innerText="Submit";
                 break;
             case "Submit":
                 let row = e.target.parentElement;
-                let rating = Number(row.children[4].children[0].value);
+                let rating = Number(row.children[10].children[0].value);
                 if(rating >= 0 && rating < 6 && rating != ''){
                     obj.rating = rating;
                     ratingUpdate(obj);
-                    row.children[4].children[0].remove();
-                    row.children[4].innerText = rating;
-                    row.children[5].innerText="Delete rating";
+                    row.children[10].children[0].remove();
+                    row.children[10].innerText = rating;
+                    row.children[11].innerText="Delete rating";
                 }else{
                     alert("please input a rating from 0 to 5");
                 }
@@ -95,8 +102,8 @@
                 let trow = e.target.parentElement;
                 obj.rating = null;
                 ratingUpdate(obj);
-                trow.children[4].innerText = null;
-                trow.children[5].innerText="Add rating";
+                trow.children[10].innerText = null;
+                trow.children[11].innerText="Add rating";
                 break;
         }
     }
@@ -111,6 +118,7 @@
             }
             //debugger;
             let btn = document.createElement("button");
+            btn.className = "btn btn-info";
             if(obj.rating != null){
                 btn.innerText = "Delete rating";  
             }else{
@@ -128,12 +136,13 @@
         const xhr = new XMLHttpRequest();
         xhr.onload = ()=>{
             if(xhr.status == 200){
+                //console.log(JSON.parse(xhr.response));
                 load(JSON.parse(xhr.response));
             }else{
                 error(xhr.statusText);
             }
         }
-        xhr.open("GET","http://localhost/php/fast-food-website/BackEnd/orderhistory.php");
+        xhr.open("GET","http://localhost/php/fast-food-website/BackEnd/orderhistory.php"+"?userID="+user.id);
         xhr.send();
     }).then(load,error)
 </script>

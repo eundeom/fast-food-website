@@ -327,12 +327,12 @@
 
     const sessionVerify = (data) => {
       sessionStorage.setItem("user", JSON.stringify(data));
-      // console.log(data);
-      // if (data[1].user_type == "C") {
-      location.replace("./menuPage.html");
-      // } else {
-      //   location.replace("./adminstrator.html");
-      // }
+      console.log(data);
+      if (data.user_type == "C") {
+        location.replace("./menuPage.html");
+      } else {
+        location.replace("./adminstrator.html");
+      }
     };
     // send to backend
     loginForm.addEventListener("submit", (e) => {
