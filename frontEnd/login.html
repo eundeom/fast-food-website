@@ -174,16 +174,7 @@
             </div>
             <div class="form-inner">
               <form class="login">
-                <div class="col-sm-7 mt-4 mb-3">
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="customer" checked />
-                    <label class="form-check-label fw-bold" for="inlineRadio1">Customer</label>
-                  </div>
-                  <div class="form-check form-check-inline mb-4">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="adminstrator" />
-                    <label class="form-check-label fw-bold" for="inlineRadio2">Adminstrator</label>
-                  </div>
-                </div>
+                
                 <div class="field mt-5">
                   <input type="email" name="email" placeholder="Email Address" required />
                 </div>
@@ -196,6 +187,16 @@
                 <div class="signup-link fw-bold">Not a member? <a href="">Sign Up Now</a></div>
               </form>
               <form action="../BackEnd/signup.php" class="signup" method="post">
+                <div class="col-sm-7 mt-4 mb-3">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="user_type" id="inlineRadio3" value="C" checked />
+                    <label class="form-check-label fw-bold" for="inlineRadio3">Customer</label>
+                  </div>
+                  <div class="form-check form-check-inline mb-4">
+                    <input class="form-check-input" type="radio" name="user_type" id="inlineRadio4" value="A" />
+                    <label class="form-check-label fw-bold" for="inlineRadio4">Adminstrator</label>
+                  </div>
+                </div>
                 <div class="field">
                   <input type="text" name="fname" placeholder="First Name" required />
                 </div>
@@ -228,6 +229,7 @@
     const loginBtn = document.querySelector("label.login");
     const signupBtn = document.querySelector("label.signup");
     const signupLink = document.querySelector("form .signup-link a");
+    const signupForm = document.querySelector("form.signup");
     signupBtn.onclick = () => {
       loginForm.style.marginLeft = "-50%";
       loginText.style.marginLeft = "-50%";
@@ -241,18 +243,43 @@
       return false;
     };
 
+    const sessionVerify = (data)=>{
+      sessionStorage.setItem("sid",data[0].sid);
+      console.log(data[1]);
+      if(data[1].user_type=="C"){
+        location.replace("./menuPage.html");
+      }else{
+        location.replace("./adminstrator.html");
+      }
+    }
     // send to backend
     loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
       let loginData = new FormData(e.target);
+      loginData.append("req","login");
       const xhr = new XMLHttpRequest();
       xhr.onload = () => {
         if (xhr.status == 200) {
-          sessionStorage.setItem("user", xhr.responseText);
+          sessionVerify(JSON.parse(xhr.response));
+          //console.log((xhr.response));
+          //sessionStorage.setItem("user", xhr.responseText);
         }
       };
-      xhr.open("POST", "http://localhost/php/fast-food-website/fast-food-website/BackEnd/login.php");
+      xhr.open("POST", "http://localhost/php/fast-food-website/BackEnd/signup.php");
       xhr.send(loginData);
     });
+    signupForm.addEventListener("submit", (e)=>{
+      e.preventDefault();
+      let signupData = new FormData(e.target);
+      signupData.append("req","signup");
+      const xhr = new XMLHttpRequest();
+      xhr.onload = ()=>{
+        if(xhr.status==200){
+          console.log(xhr.response);
+        }
+      }
+      xhr.open("POST","http://localhost/php/fast-food-website/BackEnd/signup.php");
+      xhr.send(signupData);
+    })
   </script>
 </html>
